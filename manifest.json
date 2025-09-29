@@ -1,0 +1,21 @@
+{
+  "name": "配線効率化アプリ",
+  "short_name": "配線アプリ",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#4A90E2",
+  "description": "システムの配線を効率化するためのツール",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

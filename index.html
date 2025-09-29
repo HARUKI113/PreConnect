@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配線設計ボード</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header">
+        <h1>配線設計ボード</h1>
+    </div>
+
+    <div id="main-container">
+        <div id="sidebar">
+            <h3>コントロール</h3>
+            <div id="controls">
+                <button id="add-item-btn" class="control-btn">項目を追加</button>
+                <button id="delete-item-btn" class="control-btn" disabled>項目を削除</button>
+                <button id="wire-btn" class="control-btn">接続</button>
+                <button id="organize-btn" class="control-btn">整頓</button>
+                <button id="undo-btn" class="control-btn" disabled>元に戻す</button>
+                <button id="redo-btn" class="control-btn" disabled>やり直す</button>
+                <button id="reset-board-btn" class="control-btn reset-btn">全リセット</button>
+            </div>
+
+            <div id="tab-nav">
+                <button class="tab-btn active" data-tab="tab-board-info">ボード情報</button>
+                <button class="tab-btn" data-tab="tab-templates">テンプレート</button>
+                <button class="tab-btn" data-tab="tab-bom">BOM</button>
+            </div>
+
+            <div id="tab-contents">
+                <div id="tab-board-info" class="tab-content active">
+                    <p>盤上のアイテム数や配線数がここに表示されます。</p>
+                </div>
+                
+                <div id="tab-templates" class="tab-content">
+                    <h3>テンプレートリスト</h3>
+                    <div id="template-list">
+                        <p>テンプレートがありません。「テンプレート登録」ボタンで追加してください。</p>
+                    </div>
+                    <button id="add-template-btn" class="control-btn" style="margin-top: 15px;">テンプレート登録</button>
+                </div>
+
+                <div id="tab-bom" class="tab-content">
+                    <h3>部品表 (BOM)</h3>
+                    <div id="bom-list">
+                        <p>盤面に項目を追加すると、ここに部品表が表示されます。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="wiring-board">
+            </div>
+    </div>
+
+    <div id="item-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">項目を追加</h2>
+            <form id="item-form">
+                <input type="hidden" id="edit-item-id">
+                
+                <label>項目タイプ:</label>
+                <div class="radio-group">
+                    <input type="radio" id="type-board" name="item-type" value="基板" checked>
+                    <label for="type-board">基板</label>
+                    <input type="radio" id="type-ic" name="item-type" value="IC">
+                    <label for="type-ic">IC</label>
+                    <input type="radio" id="type-connector" name="item-type" value="コネクタ">
+                    <label for="type-connector">コネクタ</label>
+                    <input type="radio" id="type-other" name="item-type" value="その他">
+                    <label for="type-other">その他</label>
+                </div>
+
+                <label for="item-name">項目名:</label>
+                <input type="text" id="item-name" required value="新規項目">
+
+                <label for="item-layer">レイヤー (層):</label>
+                <input type="number" id="item-layer" value="1" min="1">
+
+                <label for="item-color">色:</label>
+                <input type="color" id="item-color" value="#f0f8ff">
+
+                <label for="item-port-count">ポート数:</label>
+                <input type="number" id="item-port-count" value="1" min="0">
+
+                <div id="ports-config">
+                    </div>
+
+                <div id="template-selection" style="display: none;">
+                    <h3>テンプレートから追加</h3>
+                    <div id="template-selection-list">
+                        </div>
+                </div>
+
+                <div id="form-buttons">
+                    <button type="submit">保存</button>
+                    <button type="button" id="cancel-item-btn">キャンセル</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

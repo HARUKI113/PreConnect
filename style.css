@@ -1,0 +1,414 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#header {
+    background-color: #28a745; /* 濃い緑色 */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+#main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#sidebar {
+    width: 280px;
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-sizing: border-box;
+    z-index: 50;
+    overflow-y: auto; /* サイドバーが長くなった場合にスクロール可能に */
+}
+
+#sidebar h3 {
+    color: #28a745;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+#controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center; /* ボタンを中央寄せ */
+}
+
+.control-btn {
+    background-color: #007bff; /* 青色 */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex-grow: 1; /* ボタンが均等に広がるように */
+    min-width: 100px; /* 最小幅 */
+    transition: background-color 0.2s ease;
+}
+
+.control-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.control-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* 全リセットボタンのスタイル */
+.control-btn.reset-btn {
+    background-color: #dc3545; /* 赤色 */
+}
+
+.control-btn.reset-btn:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+
+#tab-nav {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-right: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.tab-btn.active {
+    background-color: #ffffff;
+    border-color: #ddd;
+    border-bottom: 1px solid #ffffff; /* アクティブなタブの下線はタブ背景色と同じに */
+    font-weight: bold;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #e0e0e0;
+}
+
+.tab-content {
+    display: none;
+    flex-grow: 1; /* コンテンツが利用可能なスペースを埋める */
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 親要素の高さを継承 */
+}
+
+#template-list, #bom-list {
+    flex-grow: 1; /* リストがスペースを埋める */
+    overflow-y: auto; /* リストが長くなったらスクロール */
+    padding-right: 5px; /* スクロールバーと内容の間に隙間 */
+}
+
+.template-item, .list-item {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.template-item .template-buttons button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.template-item .template-buttons .edit-template-btn {
+    background-color: #ffc107;
+    color: #333;
+}
+.template-item .template-buttons .edit-template-btn:hover {
+    background-color: #e0a800;
+}
+
+.template-item .template-buttons .use-template-btn {
+    background-color: #28a745;
+    color: white;
+}
+.template-item .template-buttons .use-template-btn:hover {
+    background-color: #218838;
+}
+
+#wiring-board {
+    flex: 1;
+    background-color: #e2e8e6; /* 薄い緑がかった灰色 */
+    border: 1px solid #ccd1d1;
+    position: relative;
+    overflow: auto; /* アイテムがはみ出てもスクロールで追えるように */
+    cursor: grab; /* デフォルトのカーソル */
+    touch-action: none; /* タッチイベントのデフォルト動作を一部無効化 (ピンチズームなどとの競合防止) */
+}
+
+.item-container {
+    position: absolute;
+    border: 1px solid #666;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+    transition: border-color 0.1s ease, box-shadow 0.1s ease;
+    user-select: none; /* テキスト選択を無効に */
+    z-index: 1; /* SVG線より手前に */
+}
+
+.item-container.selected {
+    border-color: #007bff; /* 選択時のボーダー色 */
+    box-shadow: 0 0 10px rgba(0,123,255,0.5); /* 選択時のシャドウ */
+}
+
+.item-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.ports-container {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    flex-wrap: wrap; /* ポートが多い場合に折り返す */
+    justify-content: center;
+}
+
+.port {
+    background-color: #6c757d; /* 濃い灰色 */
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.1s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.port:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.port.selected {
+    background-color: #dc3545; /* 選択中のポートは赤色 */
+    box-shadow: 0 0 5px rgba(220,53,69,0.7);
+}
+
+/* ★配線（接続）のスタイルを強化 - 黒色に ★ */
+.wire-line {
+    stroke: #333; /* 黒色 */
+    stroke-width: 3; /* 太くする */
+    fill: none;
+    pointer-events: none; /* 線自体はクリックできないように */
+    transition: stroke-width 0.1s ease; /* 少しアニメーション効果 */
+}
+
+/* === モーダル共通スタイル === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none; /* 初期状態では非表示 */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    max-height: 80vh; /* 高さ制限 */
+    overflow-y: auto; /* 内容が長い場合にスクロール */
+}
+
+.modal-content h2 {
+    color: #28a745;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#item-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+#item-form input[type="text"],
+#item-form input[type="number"],
+#item-form input[type="color"],
+#item-form select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+#item-form input[type="radio"] {
+    margin-right: 5px;
+}
+
+#item-form .radio-group {
+    margin-bottom: 15px;
+}
+
+#item-form .radio-group label {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: normal;
+}
+
+#ports-config {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+#ports-config h4 {
+    margin-top: 0;
+    color: #28a745;
+}
+
+.port-setting {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.port-setting input {
+    flex: 1;
+    margin-bottom: 0 !important; /* 親からのマージンを上書き */
+}
+
+#template-selection {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+#template-selection-list button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: #f0f8ff;
+    border: 1px solid #b0e0e6;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95em;
+    text-align: left;
+    transition: background-color 0.2s ease;
+}
+
+#template-selection-list button:hover {
+    background-color: #e0f2f7;
+}
+
+#form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+#form-buttons button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#form-buttons button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+#form-buttons button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+#form-buttons #cancel-item-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+#form-buttons #cancel-item-btn:hover {
+    background-color: #5a6268;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    #main-container {
+        flex-direction: column;
+    }
+    #sidebar {
+        width: 100%;
+        height: auto;
+        padding-bottom: 0; /* 下部の余白を調整 */
+    }
+    #wiring-board {
+        height: 50vh; /* 画面下半分を使用 */
+        flex: none; /* flexgrowを無効化 */
+    }
+    #controls {
+        justify-content: space-around;
+    }
+    .control-btn {
+        flex-grow: 0;
+        width: 48%; /* 2列表示 */
+    }
+}
